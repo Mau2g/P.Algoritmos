@@ -6,7 +6,6 @@ public class AzAz09FileSorter {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        // Preguntar la ruta del archivo a procesar
         System.out.print("Ingrese la ruta del archivo a ordenar: ");
         String rutaEntrada = sc.nextLine();
 
@@ -18,17 +17,19 @@ public class AzAz09FileSorter {
         }
 
         try {
-            // Leer todo el contenido del archivo
             String contenido = leerArchivo(archivoEntrada);
 
-            // Procesar el contenido con el algoritmo de ordenamiento
-            String resultado = ordenarHastaAzAZ09(contenido);
+            // Paso 1–3: ordenar hasta azAZ09
+            String resultadoOrdenado = ordenarHastaAzAZ09(contenido);
 
-            // Crear archivo de salida en la misma carpeta del programa
+            // Paso 4: formatear en bloques de 9*5 por fila
+            String resultadoFormateado = formatearEnFilas(resultadoOrdenado);
+
+            // Crear archivo de salida
             String nombreOriginal = archivoEntrada.getName();
             File archivoSalida = new File("Ord_" + nombreOriginal);
 
-            escribirArchivo(archivoSalida, resultado);
+            escribirArchivo(archivoSalida, resultadoFormateado);
 
             System.out.println("Archivo ordenado generado en: " + archivoSalida.getAbsolutePath());
 
@@ -37,7 +38,6 @@ public class AzAz09FileSorter {
         }
     }
 
-    // Lee el archivo completo y devuelve su contenido en una sola cadena
     private static String leerArchivo(File archivo) throws IOException {
         StringBuilder sb = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
@@ -49,29 +49,21 @@ public class AzAz09FileSorter {
         return sb.toString().trim();
     }
 
-    // Escribe el contenido procesado en un nuevo archivo
     private static void escribirArchivo(File archivo, String contenido) throws IOException {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivo))) {
             bw.write(contenido);
         }
     }
 
-    // Ordena hasta obtener una cadena final azAZ09
     public static String ordenarHastaAzAZ09(String entrada) {
-        // Paso 1: ordenar internamente cada bloque
         String[] bloques = entrada.trim().split("\\s+");
         for (int i = 0; i < bloques.length; i++) {
             bloques[i] = ordenarBloque(bloques[i]);
         }
-
-        // Paso 2: ordenar bloques entre sí
         Arrays.sort(bloques);
-
-        // Paso 3: ordenar globalmente
         return ordenarGlobalAzAZ09(String.join("", bloques));
     }
 
-    // Ordenar un bloque interno: minúsculas, mayúsculas, números
     private static String ordenarBloque(String b) {
         List<Character> lower = new ArrayList<>();
         List<Character> upper = new ArrayList<>();
@@ -98,7 +90,6 @@ public class AzAz09FileSorter {
         return sb.toString();
     }
 
-    // Ordenamiento global azAZ09
     private static String ordenarGlobalAzAZ09(String s) {
         List<Character> lower = new ArrayList<>();
         List<Character> upper = new ArrayList<>();
@@ -123,5 +114,24 @@ public class AzAz09FileSorter {
         for (char c : otros) sb.append(c);
 
         return sb.toString();
+    }
+
+    // NUEVA FUNCIÓN: agrupar en filas de 5 bloques de 9 caracteres
+    private static String formatearEnFilas(String cadena) {
+        StringBuilder sb = new StringBuilder();
+        int index = 0;
+
+        while (index < cadena.length()) {
+            for (int bloque = 0; bloque < 5 && index < cadena.length(); bloque++) {
+                int end = Math.min(index + 9, cadena.length());
+                sb.append(cadena, index, end);
+                index = end;
+
+                if (bloque < 4) sb.append(" ");
+            }
+            sb.append(System.lineSeparator());
+        }
+
+        return sb.toString().trim();
     }
 }
