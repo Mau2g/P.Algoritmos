@@ -3,13 +3,14 @@ import java.nio.file.*;
 import java.util.*;
 
 /**
- * Clase principal CountFinder - Herramienta para análisis de frecuencia de palabras en archivos de texto
+ * Clase principal CountFinder - Herramienta para análisis de frecuencia de palabras en archivos de texto 
  * 
  * <p>Esta aplicación permite buscar y contar coincidencias exactas y parciales de una palabra
  * específica dentro de un archivo de texto, proporcionando estadísticas detalladas y porcentajes.</p>
  * 
  * <p><b>Características principales:</b>
  * <ul>
+ * <li> O = (n * (L + M)) 
  *   <li>Lectura y procesamiento de archivos de texto</li>
  *   <li>Búsqueda de coincidencias exactas de palabras</li>
  *   <li>Búsqueda de coincidencias parciales usando algoritmo KMP</li>
