@@ -1,45 +1,7 @@
 import java.util.Scanner;
-
-/**
- * ═══════════════════════════════════════════════════════════════════════════════
- * PROGRAMA: DEMOSTRACIÓN DE BACKTRACKING - BÚSQUEDA DE COMBINACIONES
- * ═══════════════════════════════════════════════════════════════════════════════
- * 
- * ¿QUÉ ES BACKTRACKING?
- * ─────────────────────
- * Es una técnica de resolución de problemas que construye soluciones candidatas
- * incrementalmente, abandona una solución ("retrocede") tan pronto como determina
- * que la solución no puede ser completada.
- * 
- * CARACTERÍSTICAS CLAVE:
- * • Explora todas las posibilidades sistemáticamente
- * • Descarta ramas que no pueden llevar a solución (poda)
- * • Usa recursión para construir el árbol de decisiones
- * • Retrocede cuando encuentra un callejón sin salida
- * 
- * EJEMPLO PRÁCTICO:
- * ────────────────
- * Números disponibles: [1, 2, 3]
- * Objetivo: Encontrar todas las combinaciones que sumen 5
- * 
- * ÁRBOL DE BÚSQUEDA:
- *                    []
- *              /      |      \
- *           [1]      [2]      [3]
- *          /  |  \    |  \     |
- *       [1,1][1,2][1,3][2,2][2,3][3,2]
- *        | 2   | 3   | 4   | 4   | 5 ✓
- *        
- * • [1,1,1,1,1] = 5 ✓ SOLUCIÓN
- * • [1,1,1,2] = 5 ✓ SOLUCIÓN
- * • [1,2,2] = 5 ✓ SOLUCIÓN
- * • Si suma > 5, SE RETROCEDE (no continúa ese camino)
- * ═══════════════════════════════════════════════════════════════════════════════
- */
 public class BacktrackingDemo {
     
     // Variable para contar cuántas veces se ejecuta la función recursiva
-    // Esto nos ayuda a entender la complejidad del algoritmo
     static int llamadas = 0;
     
     /**
@@ -81,15 +43,8 @@ public class BacktrackingDemo {
             // Retornamos para que el algoritmo siga buscando otras soluciones posibles
             return;
         }
-        
+
         // CONDICIÓN DE PARADA 2: ✗ PODA - RAMA INVÁLIDA
-        // Si la suma YA HA EXCEDIDO el objetivo, no hay punto en continuar por este
-        // camino porque los números son positivos (nunca podremos restarles)
-        // 
-        // ESTO ES CRUCIAL EN BACKTRACKING: Esta es la "poda" que hace el algoritmo
-        // eficiente. Sin esto, exploraría combinaciones inútiles.
-        // 
-        // Ejemplo: Si objetivo=5 y suma=6 ya, no podemos volver a 5
         if (suma > objetivo) {
             System.out.println("    └─ PODA: suma " + suma + " > objetivo " + objetivo + 
                              " (retroceso automático)");
@@ -97,10 +52,6 @@ public class BacktrackingDemo {
         }
         
         // FASE DE EXPLORACIÓN: INTENTAR CADA NÚMERO DISPONIBLE
-        // Este bucle es donde ocurre la "búsqueda en profundidad" del árbol de decisiones
-        // 
-        // Usamos 'inicio' en lugar de 0 para evitar duplicados:
-        // Si ya probamos [1,2], no queremos probar [2,1] después
         for (int i = inicio; i < nums.length; i++) {
             // PASO 1: ELEGIR - Agregar nums[i] a la combinación actual
             actual[pos] = nums[i];
@@ -110,27 +61,15 @@ public class BacktrackingDemo {
                              " (suma: " + suma + " -> " + (suma + nums[i]) + ")");
             
             // PASO 2: EXPLORAR - Llamada recursiva (descender un nivel del árbol)
-            // Recursivamente intentamos agregar más números a esta combinación
-            // pos+1: pasamos a la siguiente posición del array
-            // i: continuamos desde este índice (evita duplicados)
-            // suma + nums[i]: sumamos el número que acabamos de agregar
             buscar(nums, objetivo, actual, pos + 1, i, suma + nums[i]);
             
-            // PASO 3: RETROCESO (BACKTRACK) - Ya ocurre automáticamente
-            // Cuando regresa de la recursión anterior, continuamos con el siguiente
-            // número en el bucle. El valor en actual[pos] será sobrescrito en la
-            // siguiente iteración, lo que significa que "deshacemos" la elección anterior.
-            // 
+            // PASO 3: RETROCESO (BACKTRACK)
             // NO NECESITAMOS CÓDIGO EXPLÍCITO PARA RETROCESO porque:
-            // • actual[pos] será sobrescrito en la siguiente iteración
-            // • suma no se modifica (pasamos suma+nums[i] en la recursión)
-            // • visited/visited arrays se manejan implícitamente
+
             System.out.println("  └─ Retroceso desde " + nums[i] + 
                              " (explorando otra rama)");
         }
         // FIN DE LA RECURSIÓN
-        // Cuando el bucle termina, la función retorna automáticamente, causando que
-        // la llamada anterior continúe con el siguiente número (backtracking)
     }
     
     /**
@@ -151,16 +90,16 @@ public class BacktrackingDemo {
         
         // ENCABEZADO DEL PROGRAMA
         System.out.println("===============================================");
-        System.out.println("DEMO DE BACKTRACKING - COMBINACIONES");
+        System.out.println("     DEMO DE BACKTRACKING - COMBINACIONES");
         System.out.println("===============================================\n");
         
         // ENTRADA 1: OBTENER NÚMEROS DISPONIBLES
         System.out.print("Ingresa los numeros disponibles (separados por espacio): ");
-        // Lee una línea completa (ej: "1 2 3 5")
+            // Lee una línea completa (ej: "1 2 3 5")
         String entrada = sc.nextLine();
-        // Divide la línea en partes usando espacio como delimitador
+            // Divide la línea en partes usando espacio como delimitador
         String[] partes = entrada.split(" ");
-        // Convierte los strings a integers
+            // Convierte los strings a integers
         int[] nums = new int[partes.length];
         
         for (int i = 0; i < partes.length; i++) {
@@ -179,21 +118,19 @@ public class BacktrackingDemo {
         System.out.println("Buscando todas las combinaciones que sumen " + objetivo + "...\n");
         
         // EJECUCIÓN PRINCIPAL: LLAMAR AL ALGORITMO DE BACKTRACKING
-        // Parámetros:
+
         // nums: array de números disponibles
         // objetivo: la suma que queremos alcanzar
         // new int[objetivo+1]: array para almacenar la combinación actual
         // 0: posición inicial (empezamos en índice 0)
         // 0: índice inicial de búsqueda
         // 0: suma inicial es 0 (aún no hemos elegido números)
+
         buscar(nums, objetivo, new int[objetivo+1], 0, 0, 0);
         
         // RESUMEN Y ESTADÍSTICAS
-        System.out.println("\n===============================================");
-        System.out.println("✓ BÚSQUEDA COMPLETADA");
+        System.out.println("BÚSQUEDA COMPLETADA");
         System.out.println("Total de llamadas recursivas: " + llamadas);
-        System.out.println("(Esto muestra la complejidad del árbol de búsqueda)");
-        System.out.println("===============================================");
         
         // Cerrar scanner
         sc.close();
